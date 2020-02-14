@@ -25,6 +25,7 @@ import io.reactivex.schedulers.Schedulers
  * */
 
 class TodoRepository(private val api: ApiService) : TodoListRepository {
+    val TAG = TodoRepository::class.java.simpleName
     val todoList = MutableLiveData<List<TodoResponseModel>>()
     val networkState = MutableLiveData<NetworkState>()
 
@@ -52,16 +53,11 @@ class TodoRepository(private val api: ApiService) : TodoListRepository {
                     networkState.value = NetworkState.SUCCESS
                     todoList.value = success
                 }, { error ->
-                    Log.d("DEBUG", "api error ${error.message}")
+                    Log.d(TAG, "api error ${error.message}")
                     networkState.value = NetworkState.error(error.message!!)
                 })
 
         return Pair(todoList, networkState)
     }
-
-    fun refresh(){
-
-    }
-
 
 }

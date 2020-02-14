@@ -3,6 +3,7 @@ package com.example.assignment.ui
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.example.assignment.databinding.FragmentTodoListBinding
 import com.example.assignment.ui.adapter.TodoAdapter
 import com.example.assignment.utils.Constants.DEFAULT_SUBTODO
 import com.example.assignment.utils.Constants.KEY_SUBTODO
+import com.example.assignment.utils.Utils
 import kotlinx.android.synthetic.main.fragment_todo_list.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
@@ -37,7 +39,7 @@ import org.kodein.di.generic.instance
  * Modified on February 14, 2020
  *
  * */
-class TodoListFragment : Fragment(), KodeinAware {
+class TodoListFragment : Fragment(), KodeinAware, View.OnClickListener {
 
     override val kodein by kodein()
     private val factory: TodoViewModelFactory by instance()
@@ -47,6 +49,21 @@ class TodoListFragment : Fragment(), KodeinAware {
 
     private val viewModel: TodoViewModel by lazy {
         ViewModelProvider(this, factory).get(TodoViewModel::class.java)
+    }
+
+    //handle view clicks
+    override fun onClick(view: View?) {
+        when (view?.id) {
+            R.id.reload_text_view -> {
+                reload_text_view.isEnabled = false
+                Handler().postDelayed({
+
+                    reload_text_view.isEnabled = true
+                    viewModel.refresh()
+
+                }, 100)
+            }
+        }
     }
 
     override fun onCreateView(
@@ -69,6 +86,7 @@ class TodoListFragment : Fragment(), KodeinAware {
      * initial setUp
      */
     private fun init(savedInstanceState: Bundle?) {
+        reload_text_view.setOnClickListener(this)
         setUpRecyclerViewData()
         observeNetworkState()
         initSwipeRefresh()
@@ -101,10 +119,19 @@ class TodoListFragment : Fragment(), KodeinAware {
         //get the Network state (on hitting api respone success,error an all..)
         viewModel.networkState.observe(viewLifecycleOwner,
             Observer<NetworkState> { networkState ->
-                if (networkState.statusCode == StatusCode.ERROR) {
-                    Log.d(TAG, "ERROR ${networkState.msg}")
-                    /* Utils.showSnackBar(root_layout, networkState.msg!!, getString(R.string.retry),
-                         View.OnClickListener { viewModel.retry() })*/
+                when (networkState.statusCode) {
+                    StatusCode.START -> swipeRefresh.isRefreshing = true
+
+                    StatusCode.SUCCESS -> {
+                        swipeRefresh.isRefreshing = false
+                        showReloadView(false)
+                    }
+
+                    StatusCode.ERROR -> {
+                        Log.d(TAG, "ERROR ${networkState.msg}")
+                        swipeRefresh.isRefreshing = false
+                        showReloadView(true)
+                    }
                 }
             })
     }
@@ -114,10 +141,6 @@ class TodoListFragment : Fragment(), KodeinAware {
      * Method to handle pull to refresh functionality
      */
     private fun initSwipeRefresh() {
-        /* viewModel.refreshState.observe(this, Observer {
-             swipeRefresh.isRefreshing = it == NetworkState.START
-         })*/
-
         swipeRefresh.setOnRefreshListener {
             viewModel.refresh()
         }
@@ -128,5 +151,34 @@ class TodoListFragment : Fragment(), KodeinAware {
         outState.putString(KEY_SUBTODO, viewModel.getCurrentSubTodo())
     }
 
+    /**
+     * Method to show msg when something went wrong
+     */
+    private fun showReloadView(constraint: Boolean) {
+        if (constraint) {
+            Utils.showFadeInAnimOnText(
+                context!!,
+                something_text_view,
+                getString(R.string.text_something_went_wrong)
+            )
+            Utils.showFadeInAnimOnText(
+                context!!,
+                give_it_text_view,
+                getString(R.string.text_give_it_another_try)
+            )
+            Utils.showFadeInAnimOnText(context!!, reload_text_view, getString(R.string.text_reload))
+        } else {
+            something_text_view.visibility = getVisiblility(constraint)
+            give_it_text_view.visibility = getVisiblility(constraint)
+            reload_text_view.visibility = getVisiblility(constraint)
+        }
+
+        todo_recycler_view.visibility = getVisiblility(!constraint)
+    }
+
+    /**
+     * Method returns Visibility state Visible: Gone
+     */
+    fun getVisiblility(constraint: Boolean): Int = if (constraint) View.VISIBLE else View.GONE
 
 }

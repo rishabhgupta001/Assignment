@@ -28,9 +28,18 @@ class TodoRepository(private val api: ApiService) : TodoListRepository {
     val todoList = MutableLiveData<List<TodoResponseModel>>()
     val networkState = MutableLiveData<NetworkState>()
 
-    @SuppressLint("CheckResult")
     override fun listOfTodo(): ListingDataModel<TodoResponseModel> {
 
+        val todoPair = fetchTodoList()
+
+        return ListingDataModel(
+            todoList = todoPair.first,
+            networkState = todoPair.second
+        )
+    }
+
+    @SuppressLint("CheckResult")
+    private fun fetchTodoList(): Pair<MutableLiveData<List<TodoResponseModel>>, MutableLiveData<NetworkState>> {
         api.getTodoList()
             .subscribeOn(Schedulers.io())
             .doOnSubscribe {
@@ -47,10 +56,12 @@ class TodoRepository(private val api: ApiService) : TodoListRepository {
                     networkState.value = NetworkState.error(error.message!!)
                 })
 
-        return ListingDataModel(
-            todoList = todoList,
-            networkState = networkState
-        )
+        return Pair(todoList, networkState)
     }
+
+    fun refresh(){
+
+    }
+
 
 }

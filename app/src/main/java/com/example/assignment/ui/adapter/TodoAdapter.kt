@@ -12,7 +12,7 @@ import com.example.assignment.ui.model.TodoResponseModel
 /**
  * A RecyclerView Adapter that sets data for eact item.
  */
-class TodoAdapter(private val retryCallback: () -> Unit) : ListAdapter<TodoResponseModel,
+class TodoAdapter : ListAdapter<TodoResponseModel,
         RecyclerView.ViewHolder>(diff) {
     private var networkState: NetworkState? = null
 

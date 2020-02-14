@@ -13,6 +13,12 @@ import com.example.assignment.ui.model.TodoResponseModel
  */
 class TodoViewHolder(val binding: ItemLayoutTodoBinding) : RecyclerView.ViewHolder(binding.root) {
 
+    init {
+        itemView.setOnClickListener{
+
+        }
+    }
+
     fun bindData(data: TodoResponseModel) {
         binding.data = data
     }

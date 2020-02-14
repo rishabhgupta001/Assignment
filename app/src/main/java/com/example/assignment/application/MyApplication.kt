@@ -1,4 +1,4 @@
-package com.example.assignment
+package com.example.assignment.application
 
 import android.app.Application
 import com.example.assignment.data.network.ApiService
@@ -13,7 +13,7 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.provider
 import org.kodein.di.generic.singleton
 
-class MyApplication() : Application(), KodeinAware {
+class MyApplication : Application(), KodeinAware {
 
     override val kodein = Kodein.lazy {
         import(androidXModule(this@MyApplication))

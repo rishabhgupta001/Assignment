@@ -8,6 +8,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.assignment.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 /**
  *
@@ -18,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 ​
  * Created on February 13, 2020
 ​
- * Modified on February 13, 2020
+ * Modified on February 14, 2020
  *
  * */
 class MainActivity : AppCompatActivity() {
@@ -26,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         bindingView = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
@@ -45,5 +45,8 @@ class MainActivity : AppCompatActivity() {
 
         // Setup Toolbar
         toolbar.setupWithNavController(findNavController)
+
+        toolbar.title = ""
+        toolbar.toolbar_title.text = getString(R.string.text_todo_list)
     }
 }

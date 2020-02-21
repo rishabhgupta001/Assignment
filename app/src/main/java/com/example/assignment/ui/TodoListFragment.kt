@@ -19,8 +19,7 @@ import com.example.assignment.data.network.NetworkState
 import com.example.assignment.data.network.StatusCode
 import com.example.assignment.databinding.FragmentTodoListBinding
 import com.example.assignment.ui.adapter.TodoAdapter
-import com.example.assignment.utils.Constants.DEFAULT_SUBTODO
-import com.example.assignment.utils.Constants.KEY_SUBTODO
+import com.example.assignment.utils.Utils.getVisiblility
 import kotlinx.android.synthetic.main.fragment_todo_list.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
@@ -36,7 +35,7 @@ import org.kodein.di.generic.instance
 ​
  * Created on February 13, 2020
 ​
- * Modified on February 14, 2020
+ * Modified on February 21, 2020
  *
  * */
 class TodoListFragment : Fragment(), KodeinAware, View.OnClickListener {
@@ -79,19 +78,18 @@ class TodoListFragment : Fragment(), KodeinAware, View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        init(savedInstanceState)
+        init()
     }
 
     /**
      * initial setUp
      */
-    private fun init(savedInstanceState: Bundle?) {
+    private fun init() {
         reload_text_view.setOnClickListener(this)
         setUpRecyclerViewData()
         observeNetworkState()
         initSwipeRefresh()
-        val subTodo = savedInstanceState?.getString(KEY_SUBTODO) ?: DEFAULT_SUBTODO
-        viewModel.showSubTodo(subTodo)
+        viewModel.refresh()
     }
 
     /**
@@ -150,11 +148,6 @@ class TodoListFragment : Fragment(), KodeinAware, View.OnClickListener {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(KEY_SUBTODO, viewModel.getCurrentSubTodo())
-    }
-
     /**
      * Method to show msg when something went wrong
      */
@@ -164,8 +157,5 @@ class TodoListFragment : Fragment(), KodeinAware, View.OnClickListener {
         reload_text_view.visibility = getVisiblility(constraint)
     }
 
-    /**
-     * Method returns Visibility state Visible: Gone
-     */
-    fun getVisiblility(constraint: Boolean): Int = if (constraint) View.VISIBLE else View.GONE
+
 }

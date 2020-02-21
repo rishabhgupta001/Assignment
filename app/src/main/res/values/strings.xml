@@ -13,6 +13,7 @@
     <string name="text_something_went_wrong">Something went wrong</string>
     <string name="text_give_it_another_try">Give it another try</string>
     <string name="text_reload"><u>Reload</u></string>
+    <string name="text_reponse_null">Response Object is Null</string>
 
 
 </resources>

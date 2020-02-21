@@ -1,9 +1,12 @@
 package com.example.assignment.ui
 
+import android.os.Handler
+import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.assignment.data.repository.TodoRepository
+import kotlinx.android.synthetic.main.fragment_todo_list.*
 
 /**
  *
@@ -41,14 +44,4 @@ class TodoViewModel(private val repository: TodoRepository) : ViewModel() {
         subTodoName.value = null
     }
 
-    fun showSubTodo(subTodo: String): Boolean {
-        return if (subTodoName.value == subTodo)
-            false
-        else {
-            subTodoName.value = subTodo
-            true
-        }
-    }
-
-    fun getCurrentSubTodo(): String? = subTodoName.value
 }

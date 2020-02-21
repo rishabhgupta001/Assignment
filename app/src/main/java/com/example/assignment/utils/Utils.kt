@@ -20,13 +20,9 @@ import com.example.assignment.R
  * */
 
 object Utils {
-    /***
-     * Method to show Fade In Animation on Texts
+
+    /**
+     * Method returns Visibility state Visible: Gone
      */
-    fun showFadeInAnimOnText(context: Context, textView: TextView, msg: String) {
-        val animFadeIn = AnimationUtils.loadAnimation(context, R.anim.fabe_in)
-        textView.visibility = View.VISIBLE
-        textView.text = msg
-        textView.startAnimation(animFadeIn)
-    }
+    fun getVisiblility(constraint: Boolean): Int = if (constraint) View.VISIBLE else View.GONE
 }

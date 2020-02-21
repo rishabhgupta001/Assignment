@@ -14,7 +14,6 @@ import com.example.assignment.ui.model.TodoResponseModel
  */
 class TodoAdapter : ListAdapter<TodoResponseModel,
         RecyclerView.ViewHolder>(diff) {
-    private var networkState: NetworkState? = null
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
